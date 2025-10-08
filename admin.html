@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin - Lakshmir Bhandar Data</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    body{
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#00ffcc,#0066ff);
+      min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;padding:20px;color:#fff;
+      overflow-x: auto; /* Allows horizontal scrolling for wide table */
+    }
+    h1{margin-top:20px;}
+    .panel{
+      width:100%; max-width:1200px; background:rgba(255,255,255,0.1);
+      backdrop-filter:blur(10px);padding:20px;border-radius:20px;margin-top:20px;
+      box-shadow:0 5px 20px rgba(0,0,0,0.3);
+    }
+    table{min-width: 1200px; width:100%;border-collapse:collapse;margin-top:10px;background:rgba(255,255,255,0.9);color:#000;}
+    th,td{border:1px solid #ccc;padding:8px;text-align:left; white-space: nowrap; font-size: 13px;}
+    th{background:#0072ff;color:#fff; cursor: pointer;}
+    th:hover {background: #005bb5;}
+    .status-dropdown select {padding: 3px; border-radius: 4px;}
+    button{background:#ff6a00;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer; margin: 2px 0;}
+    button:hover{transform:scale(1.05);}
+    #loginBox{margin-top:50px;text-align:center; padding: 20px; border-radius: 10px; background: rgba(0,0,0,0.2);}
+    input{padding:10px;border-radius:8px;border:none;}
+    #statusMessage {margin-top: 15px; font-weight: 600; color: #ff0;}
+</style>
+</head>
+<body>
+
+<h1>Admin Panel - Lakshmir Bhandar</h1>
+<div id="loginBox">
+    <p>Enter Admin Password</p>
+    <input type="password" id="adminPass" placeholder="Password">
+    <button onclick="adminLogin()">Login</button>
+    <div id="statusMessage"></div>
+</div>
+
+<div class="panel" id="adminPanel" style="display:none;">
+    <h2>Registered Applicants</h2>
+    <div id="loading" style="text-align:center; color:#000;">Loading data from Google Sheet...</div>
+    <table id="dataTable">
+        <thead></thead>
+        <tbody id="dataRows"></tbody>
+    </table>
+</div>
+
+<script>
+    const ADMIN_PASSWORD = "12345"; // <--- CHANGE THIS PASSWORD
+    // Use the same URL as your HTML form submission
+    const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCjVYz3e3ptofhVHj03kHoyMl4nKOmhO_gJmabtLC-HRuch-S9rL-8a_bMK2M3m_UC/exec'; 
+    let sheetData = []; // Global variable to hold fetched data
+
+    function adminLogin() {
+        const pass = document.getElementById("adminPass").value;
+        if (pass === ADMIN_PASSWORD) {
+            document.getElementById("loginBox").style.display = "none";
+            document.getElementById("adminPanel").style.display = "block";
+            loadData();
+        } else {
+            document.getElementById("statusMessage").textContent = "Wrong Password!";
+        }
+    }
+
+    async function loadData() {
+        document.getElementById("loading").style.display = "block";
+        try {
+            // Call the doGet function of the Apps Script
+            const response = await fetch(SHEET_SCRIPT_URL, {
+                method: 'GET',
+                mode: 'cors'
+            });
+
+            const result = await response.json();
+            sheetData = result.data; // Store the array of objects
+            
+            renderTable(result.headers, sheetData);
+
+        } catch (error) {
+            document.getElementById("loading").textContent = "Error loading data: " + error.message;
+            console.error('Fetch Error:', error);
+        }
+        document.getElementById("loading").style.display = "none";
+    }
+
+    function renderTable(headers, data) {
+        const thead = document.querySelector("#dataTable thead");
+        const tbody = document.getElementById("dataRows");
+        thead.innerHTML = "";
+        tbody.innerHTML = "";
+        
+        // 1. Render Headers
+        const headerRow = document.createElement("tr");
+        headers.forEach(h => {
+            const th = document.createElement("th");
+            th.textContent = h.replace(/_/g, ' '); // Replace underscores with spaces for readability
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
+        // 2. Render Data Rows
+        data.forEach((row, index) => {
+            const tr = document.createElement("tr");
+            headers.forEach(headerKey => {
+                const td = document.createElement("td");
+                const value = row[headerKey];
+                
+                // Special handling for the Photo URL column
+                if (headerKey === 'Photo_Upload' && value && value.startsWith('data:image')) {
+                    td.innerHTML = `<button onclick="viewPhoto('${value}')">View Photo</button>`;
+                } 
+                // Special handling for status/validation fields (TODO: Add dropdowns later)
+                else if (headerKey.includes('status') || headerKey.includes('Validation') || headerKey.includes('Payment') || headerKey.includes('Agreement')) {
+                     // For simplicity, just display the value for now. 
+                     // Advanced update logic (Step 4) is needed to enable editing.
+                     td.textContent = value;
+                }
+                else {
+                    td.textContent = value;
+                }
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        });
+    }
+
+    function viewPhoto(base64Url) {
+        // Simple way to view the photo: open it in a new tab
+        const w = window.open();
+        w.document.write(`<img src="${base64Url}" style="max-width:100%; height:auto;">`);
+        w.document.close();
+    }
+</script>
+
+</body>
+</html>

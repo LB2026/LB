@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Lakshmir Bhandar Data Portal 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Modern Reset & Font */
+* {margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif;}
+
+/* Body - Vibrant Gradient Background */
+body {
+  min-height: 100vh;
+  /* Brighter, more energetic gradient */
+  background: linear-gradient(135deg,  #4ceaff , #f3ff4b , #37fa72 );
+  color: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow-y: auto; /* Allow scrolling for small screens */
+  padding: 20px 0;
+}
+
+/* Glassmorphism Effect Base */
+.glass {
+  background: rgba(255, 255, 255, 0.15); /* Light, transparent white */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  padding: 20px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 0 4px 8px rgb(17, 0, 255);
+}
+header h1 {
+  font-size: 38px;
+  color: #ff0000;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 
+     -2px -2px 0 #fff,
+   2px -2px 0 #fff,
+  -2px  2px 0 #fff,
+   2px  2px 0 #fff; /* Creates white stroke effect */
+}
+header h2 {
+  font-size: 20px;
+  color: #ffffff; /* Darker secondary color for contrast */
+  margin-top: 5px;
+  background: #f100cd; /* Bright highlight */
+  padding: 5px 15px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+/* Navigation - Floating Glass Bar */
+nav {
+  display: flex; gap: 15px; margin-bottom: 40px;
+  padding: 8px 15px;
+  border-radius: 50px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  /* Use glassmorphism mixin */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+nav button {
+  background: transparent; border: none; color: #0004e7; font-weight: 600;
+  padding: 10px 20px; border-radius: 30px; cursor: pointer; transition: 0.3s;
+  font-size: 15px;
+}
+/* Active/Hover State - Vibrant Contrast */
+nav button:hover, nav button.active {
+  background: #1eb100;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Content Sections */
+.content {
+  display: none;
+  width: 90%; max-width: 900px;
+  text-align: center;
+  color: #000; /* Dark text for readability on light glass background */
+  /* Use glassmorphism mixin */
+  background: linear-gradient(90deg, #ffc5dd, #ffffff, #ffffff, #c8f7ff);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  
+}
+.content.active {display: block; animation: fadeIn 0.5s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.content h2 {color: #27d700; margin-bottom: 15px; font-weight: 700;}
+.content p {color: #3600f8; line-height: 1.8;}
+.content a {color: #ff1dbb; font-weight: 600; text-decoration: none;}
+
+/* Modal - Full screen overlay */
+.modal {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7); display: none;
+  align-items: center; justify-content: center; z-index: 1000;
+}
+.modal.active {display: flex;}
+.modal-content {
+  /* Use glassmorphism mixin for the modal */
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 25px;
+  padding: 30px;
+  width: 90%; max-width: 750px;
+  max-height: 90vh; overflow-y: auto;
+  color: #333;
+  animation: pop 0.4s ease;
+  position: relative; /* Needed for close button positioning */
+}
+@keyframes pop{from{transform:scale(0.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+.close {
+  position: absolute; top: 15px; right: 25px;
+  font-size: 30px; color: #FF6F91; cursor: pointer; font-weight: 300;
+  transition: transform 0.2s;
+}
+.close:hover {transform: rotate(90deg);}
+
+/* Form Styling */
+.rg {
+  padding: 15px 20px;
+  text-align: center;
+  /* Multi-color header for impact */
+  background: linear-gradient(90deg, #ff003c, #ffea00, #40e100);
+  border-radius: 15px;
+  color: #000;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin-bottom: 25px;
+}
+.rg h1 { color: #3b29ff; text-shadow: 0 2px 6px rgb(255, 255, 255); }
+.rg h2 {font-size: 16px; margin-top: 5px; color: #ffffff;}
+
+form label {display: block; margin-top: 15px; font-weight: 600; color: #444;}
+form input, form select, form textarea {
+  width: 100%; padding: 12px; border-radius: 8px;
+  border: 2px solid #ddd;
+  margin-top: 8px; font-size: 15px;
+  transition: border-color 0.3s;
+}
+form input:focus, form select:focus, form textarea:focus {
+  border-color: #FF6F91;
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 111, 145, 0.5);
+}
+
+.two {display: grid; grid-template-columns: 1fr 1fr; gap: 20px;}
+@media (max-width: 600px) {
+  .two {grid-template-columns: 1fr;} /* Stack columns on small screens */
+}
+
+/* Submit Button - Bold and modern */
+button.submit {
+  margin-top: 30px; width: 100%; padding: 16px; border: none;
+  background: linear-gradient(90deg, #FF6F91, #00C9A7);
+  border-radius: 12px; color: #fff; font-weight: 700; font-size: 18px;
+  cursor: pointer; transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+button.submit:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+#status {
+  text-align: center; margin-top: 15px; font-weight: 600;
+  font-size: 16px; padding: 10px;
+}
+
+/* Scrollbar styling for modal */
+.modal-content::-webkit-scrollbar {width: 8px;}
+.modal-content::-webkit-scrollbar-track {background: #f1f1f1; border-radius: 10px;}
+.modal-content::-webkit-scrollbar-thumb {background: #FF6F91; border-radius: 10px;}
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>West Bengal Lakshmir Bhandar Scheme 2026</h1>
+  <h2>Digital Registration Portal - Digi World Tapan</h2>
+</header>
+
+<nav>
+  <button id="btn-home" class="active" onclick="showContent('home', this)">Home</button>
+  <button id="btn-about" onclick="showContent('about', this)">About</button>
+  <button id="btn-contact" onclick="showContent('contact', this)">Contact</button>
+  <button onclick="openModal('registerModal')">Register</button>
+  <button onclick="window.location='admin.html'">Admin</button>
+</nav>
+
+<div id="home" class="content active">
+  <h2>Lakshmir Bhandar Scheme</h2>
+  <p>
+    The <b>Lakshmir Bhandar Scheme</b> is a major social welfare initiative by the <b>Government of West Bengal</b>.
+    It aims to provide monthly financial assistance to women to improve their financial independence.
+    <br><br>
+    Our portal at <b>Digi World, Tapan Dakshin Dinajpur</b> offers a fully digital way to register for this scheme —
+    ensuring safe, quick, and paperless registration.
+  </p>
+</div>
+
+<div id="about" class="content">
+  <h2>About Us</h2>
+  <p>
+    We are a certified digital service center helping citizens enroll for government welfare schemes like Lakshmir Bhandar.
+    Our mission is to simplify the process for rural and semi-urban women and ensure transparent, error-free digital submission.
+  </p>
+</div>
+
+<div id="contact" class="content">
+  <h2>Contact Us</h2>
+  <p>
+    <b>Digi World - Lakshmir Bhandar Data Center</b><br>
+    Near Nakrakuri Bridge, Tapan Dakshin Dinajpur,<br>
+    West Bengal - 733127<br><br>
+    📞 <b>9064899089</b><br>
+    📍 Location: <a href="https://maps.google.com" target="_blank">Open in Google Maps</a>
+  </p>
+</div>
+
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('registerModal')">&times;</span>
+    <header class="rg">
+      <h1>Lakshmir Bhandar Data 2026</h1>
+      <h2>Registration Form</h2>
+    </header>
+
+    <form id="regForm">
+      <div class="two">
+        <div><label>Name</label><input id="name" name="Name" type="text" required /></div>
+        <div><label>Date of Birth</label><input id="dob" name="Date_of_Birth" type="date" required /></div>
+      </div>
+      <div class="two">
+        <div><label>Father's Name</label><input id="father" name="Father_Name" type="text" required /></div>
+        <div><label>Mother's Name</label><input id="mother" name="Mother_Name" type="text" required /></div>
+      </div>
+      <label>Husband's Name (if applicable)</label><input id="husband" name="Husband_Name" type="text" />
+      <div class="two">
+        <div><label>Aadhaar Number</label><input id="aadhaar" name="Aadhaar_Number" type="text" maxlength="12" required /></div>
+        <div><label>Voter Number</label><input id="voter" name="Voter_Number" type="text" /></div>
+      </div>
+      <div class="two">
+        <div><label>Caste Certificate Number</label><input id="caste" name="Caste_Number" type="text" /></div>
+        <div><label>Swasthasathi Card Number</label><input id="swasthasathi" name="Swasthasathi_Number" type="text" /></div>
+      </div>
+      <label>Address</label><textarea id="address" name="Address" rows="2" required></textarea>
+      <div class="two">
+        <div>
+          <label>Bank Name</label>
+          <select id="bank" name="Bank_Name" required>
+            <option value="">-- Select Bank --</option>
+            <option>State Bank of India</option><option>Punjab National Bank</option>
+            <option>Bank of Baroda</option><option>UCO Bank</option><option>Union Bank of India</option>
+          </select>
+        </div>
+        <div><label>IFSC</label><input id="ifsc" name="IFSC" type="text" maxlength="11" required /></div>
+      </div>
+      <div class="two">
+        <div><label>Account Number</label><input id="account" name="Account_Number" type="text" required /></div>
+        <div><label>Mobile Number</label><input id="mobile" name="Mobile_Number" type="tel" maxlength="10" required /></div>
+      </div>
+        <label for="photo">Photo Upload</label>
+        <input id="photo" name="Photo" type="file" accept="image/*"  />
+      <button type="submit" class="submit">Submit Registration Data</button>
+      <div id="status"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+// --- UI Functions ---
+function showContent(id, button) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+  if (button) {
+    button.classList.add('active');
+  }
+}
+
+function openModal(id) {document.getElementById(id).classList.add('active');}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+  document.getElementById("status").textContent = "";
+  document.getElementById("regForm").reset();
+}
+
+// Auto uppercase
+document.querySelectorAll('#name, #father, #mother, #husband, #voter, #caste, #ifsc').forEach(i => {
+  i.addEventListener('input', () => { i.value = i.value.toUpperCase(); });
+});
+
+// --- File to Base64 Data URL Conversion ---
+/**
+ * Converts a File object (from a file input) into a Base64 Data URL string.
+ * This is an asynchronous operation.
+ * @param {File} file The file to convert.
+ * @returns {Promise<string>} A promise that resolves with the Base64 Data URL.
+ */
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+    reader.readAsDataURL(file); // Reads the file as a data URL (Base64)
+  });
+}
+
+// --- Form Submission & Google Sheet Integration ---
+
+// ** IMPORTANT: Replace this URL with your published Google Apps Script Web App URL **
+// I've kept the example URL but you must use your own live deployment URL.
+const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCjVYz3e3ptofhVHj03kHoyMl4nKOmhO_gJmabtLC-HRuch-S9rL-8a_bMK2M3m_UC/exec';
+
+document.getElementById("regForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const s = document.getElementById("status");
+  const photoInput = document.getElementById("photo");
+  
+  // Client-side Validation (Aadhaar, Mobile, IFSC)
+  const a = document.getElementById("aadhaar").value.trim();
+  const m = document.getElementById("mobile").value.trim();
+  const i = document.getElementById("ifsc").value.trim();
+
+  if (!/^\d{12}$/.test(a)) { s.textContent = "❌ Aadhaar must be exactly 12 digits."; return; }
+  if (!/^\d{10}$/.test(m)) { s.textContent = "❌ Mobile must be exactly 10 digits."; return; }
+  if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(i)) { s.textContent = "❌ IFSC format invalid (e.g., ABCD0123456)."; return; }
+  
+  if (!photoInput.files || photoInput.files.length === 0) {
+    s.textContent = "❌ Please upload a Photo.";
+    return;
+  }
+
+  s.innerHTML = "<span style='font-size:22px;'>⏳</span> Uploading...<br><small>Please wait a few seconds.</small>";
+  
+  try {
+    // 1. Convert the file to a Base64 Data URL
+    const photoBase64Url = await fileToBase64(photoInput.files[0]);
+    
+    // 2. Collect other form data
+    const formData = new FormData(form);
+    const data = {};
+
+    for (let [key, value] of formData.entries()) {
+      // Use the name attribute as the key, e.g., 'Name', 'Date_of_Birth', etc.
+      data[key] = value;
+    }
+    
+    // Remove the File object, replace it with the Base64 URL string
+    // NOTE: The 'name' attribute for the input is 'Photo'
+    delete data.Photo; 
+    
+    // CRITICAL CHANGE: Map the Base64 data to the key that matches your sheet header.
+    // If your sheet uses "Photo Upload" as the header, you must ensure the Apps Script knows to map
+    // the incoming JavaScript key (e.g., 'Photo_Upload') to that header.
+    // For simplicity, we use the underscore version here, assuming the Apps Script
+    // will replace underscores with spaces to match your header "Photo Upload".
+    data.Photo_Upload = photoBase64Url;
+    
+    // Add timestamp for submission tracking
+    data.Timestamp = new Date().toLocaleString(); 
+    
+    // 3. Submit the data
+    await submitToSheet(data, s, form);
+    
+  } catch (error) {
+    s.style.color = 'red';
+    s.textContent = `❌ Submission Error: Failed to process photo or submit. Check console for details.`;
+    console.error('Submission Error:', error);
+  }
+});
+
+async function submitToSheet(data, statusElement, form) {
+  
+  // Prepare data for the script (send as JSON)
+  const payload = JSON.stringify(data);
+
+  try {
+    const response = await fetch(SHEET_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: payload
+    });
+
+    if (response.ok) {
+      statusElement.style.color = 'green';
+      statusElement.textContent = "✅ Registered Successfully and Photo URL Saved!";
+      form.reset(); // Clear form on successful submission
+    } else {
+      statusElement.style.color = 'red';
+      statusElement.textContent = `❌ Submission Failed: Server error (${response.status} ${response.statusText}). Check Apps Script logs.`;
+    }
+  } catch (error) {
+    statusElement.style.color = 'red';
+    statusElement.textContent = `❌ Submission Failed: Network Error or Invalid Script URL.`;
+    console.error('Submission Error:', error);
+  }
+}
+</script>
+</body>
+</html>
