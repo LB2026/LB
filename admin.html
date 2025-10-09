@@ -15,47 +15,175 @@
     }
     h1{margin-top:20px;}
     .panel{
-      width:100%; max-width:1200px; background:rgba(255,255,255,0.1);
+      width:100%; max-width:1400px; background:rgba(255,255,255,0.1);
       backdrop-filter:blur(10px);padding:20px;border-radius:20px;margin-top:20px;
       box-shadow:0 5px 20px rgba(0,0,0,0.3);
     }
-    table{min-width: 1200px; width:100%;border-collapse:collapse;margin-top:10px;background:rgba(255,255,255,0.9);color:#000;}
+    table{min-width: 800px; width:100%;border-collapse:collapse;margin-top:10px;background:rgba(255,255,255,0.9);color:#000;}
     th,td{border:1px solid #ccc;padding:8px;text-align:left; white-space: nowrap; font-size: 13px;}
     th{background:#0072ff;color:#fff; cursor: pointer;}
     th:hover {background: #005bb5;}
-    .status-dropdown select {padding: 3px; border-radius: 4px;}
-    button{background:#ff6a00;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer; margin: 2px 0;}
+    button{background:#ff6a00;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer; margin: 2px 5px;}
     button:hover{transform:scale(1.05);}
     #loginBox{margin-top:50px;text-align:center; padding: 20px; border-radius: 10px; background: rgba(0,0,0,0.2);}
     input{padding:10px;border-radius:8px;border:none;}
     #statusMessage {margin-top: 15px; font-weight: 600; color: #ff0;}
+    
+    /* Modal Styles */
+    .modal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.7); display: none;
+        align-items: center; justify-content: center; z-index: 1000;
+        backdrop-filter: blur(5px);
+    }
+    .modal.active {display: flex;}
+    .modal-content {
+        background: #b6f9ff; border-radius: 15px; padding: 30px;
+        width: 95%; max-width: 800px; /* Increased max width */
+        max-height: 90vh; overflow-y: auto;
+        color: #333; position: relative;
+    }
+    .close {
+        position: absolute; top: 15px; right: 25px; font-size: 30px; 
+        color: #FF6F91; cursor: pointer; font-weight: 300; transition: transform 0.2s;
+    }
+    .modal-content h3 {margin-top: 0; color: #0072ff;}
+    
+    /* New styles for two-column modal */
+    .modal-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr; /* Details on left, Photo on right */
+        gap: 20px;
+    }
+    .details-section p {
+        margin: 5px 0; border-bottom: 1px dotted #eee; padding-bottom: 5px;
+    }
+    .details-section p strong, .details-section label strong {
+        min-width: 150px; display: inline-block; color: #444; font-weight: 600;
+    }
+    .photo-section {
+        text-align: center;
+    }
+    .applicant-photo {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        margin-top: 10px;
+    }
+    .modal-footer {
+        text-align: right;
+        border-top: 1px solid #eee;
+        padding-top: 15px;
+        margin-top: 15px;
+    }
+    .modal-footer button {
+        background: #FF6F91; /* Highlight edit button */
+        margin-left: 10px;
+    }
+    .modal-footer button:hover {
+        background: #d45172;
+    }
+    .details-section label {
+        display: block; margin-top: 10px;
+    }
+    .editable-input {
+        width: 100%;
+        padding: 6px;
+        margin-top: 2px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    @media (max-width: 700px) {
+        .modal-grid {
+            grid-template-columns: 1fr;
+        }
+        .photo-section {
+            order: -1; /* Move photo to top on mobile */
+        }
+    }
 </style>
 </head>
 <body>
 
 <h1>Admin Panel - Lakshmir Bhandar</h1>
 <div id="loginBox">
-    <p>Enter Admin Password</p>
-    <input type="password" id="adminPass" placeholder="Password">
-    <button onclick="adminLogin()">Login</button>
+    <p style="font-weight: bold; color: #fbff00;">Admin Password</p>
+    <input type="password" id="adminPass" placeholder="Password" onkeydown="if(event.key === 'Enter') adminLogin()">
+    <br><br><button onclick="adminLogin()">Login</button>
     <div id="statusMessage"></div>
 </div>
 
 <div class="panel" id="adminPanel" style="display:none;">
     <h2>Registered Applicants</h2>
-    <div id="loading" style="text-align:center; color:#000;">Loading data from Google Sheet...</div>
+    <div id="loading" style="text-align:center; color:#000;">Loading data from Firestore...</div>
     <table id="dataTable">
         <thead></thead>
         <tbody id="dataRows"></tbody>
     </table>
 </div>
 
+<div id="dataModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('dataModal')">×</span>
+        <h3 id="dataModalTitle" style="margin-bottom: 15px;">Applicant Details: <span id="applicantNameHeader"></span></h3>
+        
+        <form id="fullEditForm">
+            <input type="hidden" id="editDocId">
+            <div class="modal-grid">
+                <div class="details-section" id="detailsSection">
+                    </div>
+                <div class="photo-section">
+                    <p>Applicant Photo</p>
+                    <img id="applicantPhoto" class="applicant-photo" src="" alt="Applicant Photo">
+                    <p id="noPhotoMsg" style="color: red; margin-top: 10px; display: none;">No Photo Available</p>
+                </div>
+            </div>
+            
+            <div class="modal-footer" id="modalFooter">
+                <p id="editStatusMessage" style="text-align: center; margin-bottom: 10px; color: red;"></p>
+                <button type="button" id="editButton" class="modal-button" onclick="toggleEditMode(true)">Edit Details</button>
+                <button type="submit" id="saveButton" class="modal-button" style="background:#00aaff; display:none;">Save All Updates</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
 <script>
     const ADMIN_PASSWORD = "12345"; // <--- CHANGE THIS PASSWORD
-    // Use the same URL as your HTML form submission
-    const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCjVYz3e3ptofhVHj03kHoyMl4nKOmhO_gJmabtLC-HRuch-S9rL-8a_bMK2M3m_UC/exec'; 
+    const COLLECTION_NAME = 'lakshmir_bhandar_registrations'; // IMPORTANT: Use your collection name
     let sheetData = []; // Global variable to hold fetched data
+    let currentApplicantData = {}; // Global variable to hold the applicant currently in the modal
 
+    // 2. Your Firebase Project Configuration (REPLACE WITH YOUR ACTUAL CONFIG)
+    const firebaseConfig = {
+  apiKey: "AIzaSyBl45xlrEjrZrDp-96PhVkhKaqcp0OEzLs",
+  authDomain: "lb26-6e70d.firebaseapp.com",
+  projectId: "lb26-6e70d",
+  storageBucket: "lb26-6e70d.firebasestorage.app",
+  messagingSenderId: "206802262023",
+  appId: "1:206802262023:web:336d2466948bccc4f672a2",
+  measurementId: "G-CYVV64P9VP"
+};
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // --- UI Functions ---
+    function openModal(id) {document.getElementById(id).classList.add('active');}
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+        // Reset modal to view mode when closed
+        if (id === 'dataModal') {
+            toggleEditMode(false);
+        }
+    }
+
+    // --- Login & Data Loading ---
     function adminLogin() {
         const pass = document.getElementById("adminPass").value;
         if (pass === ADMIN_PASSWORD) {
@@ -70,20 +198,22 @@
     async function loadData() {
         document.getElementById("loading").style.display = "block";
         try {
-            // Call the doGet function of the Apps Script
-            const response = await fetch(SHEET_SCRIPT_URL, {
-                method: 'GET',
-                mode: 'cors'
-            });
-
-            const result = await response.json();
-            sheetData = result.data; // Store the array of objects
+            const snapshot = await db.collection(COLLECTION_NAME).get();
             
-            renderTable(result.headers, sheetData);
+            sheetData = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                data.id = doc.id; 
+                sheetData.push(data);
+            });
+            
+            // Define fixed headers for the main data table (Matching user request)
+            const displayHeaders = ['Name', 'Date_of_Birth', 'Father_Name', 'Aadhaar_Number', 'Address', 'Case_Status', 'Actions'];
+            renderTable(displayHeaders, sheetData);
 
         } catch (error) {
             document.getElementById("loading").textContent = "Error loading data: " + error.message;
-            console.error('Fetch Error:', error);
+            console.error('Firestore Fetch Error:', error);
         }
         document.getElementById("loading").style.display = "none";
     }
@@ -98,30 +228,36 @@
         const headerRow = document.createElement("tr");
         headers.forEach(h => {
             const th = document.createElement("th");
-            th.textContent = h.replace(/_/g, ' '); // Replace underscores with spaces for readability
+            th.textContent = h.replace(/_/g, ' '); 
             headerRow.appendChild(th);
         });
         thead.appendChild(headerRow);
 
         // 2. Render Data Rows
-        data.forEach((row, index) => {
+        data.forEach(row => {
             const tr = document.createElement("tr");
             headers.forEach(headerKey => {
                 const td = document.createElement("td");
-                const value = row[headerKey];
+                const value = row[headerKey] || 'N/A';
+
+                if (headerKey === 'Actions') {
+                    // Only View button requested
+                    td.innerHTML = `<button onclick="openDataModal('${row.id}')">View Details</button>`;
                 
-                // Special handling for the Photo URL column
-                if (headerKey === 'Photo_Upload' && value && value.startsWith('data:image')) {
-                    td.innerHTML = `<button onclick="viewPhoto('${value}')">View Photo</button>`;
-                } 
-                // Special handling for status/validation fields (TODO: Add dropdowns later)
-                else if (headerKey.includes('status') || headerKey.includes('Validation') || headerKey.includes('Payment') || headerKey.includes('Agreement')) {
-                     // For simplicity, just display the value for now. 
-                     // Advanced update logic (Step 4) is needed to enable editing.
-                     td.textContent = value;
+                } else if (headerKey === 'Case_Status') {
+                    // Case Status Highlighting (Updated to use 'Wait for Entry')
+                    td.textContent = value || 'N/A';
+                    td.style.fontWeight = 'bold';
+                    if (value === '4th District Verified') td.style.color = 'green';
+                    else if (value === 'Wait for Entry' || value === '1st Entry') td.style.color = 'orange';
+                    else td.style.color = 'blue';
+
+                } else if (headerKey === 'Date_of_Birth') {
+                    // Keep Date format simple for table view
+                    td.textContent = value || 'N/A';
                 }
                 else {
-                    td.textContent = value;
+                    td.textContent = value || 'N/A';
                 }
                 tr.appendChild(td);
             });
@@ -129,12 +265,191 @@
         });
     }
 
-    function viewPhoto(base64Url) {
-        // Simple way to view the photo: open it in a new tab
-        const w = window.open();
-        w.document.write(`<img src="${base64Url}" style="max-width:100%; height:auto;">`);
-        w.document.close();
+    // --- Detail Fields Definition (Used for both View and Edit) ---
+    const detailFields = [
+        { key: 'id', label: 'Firestore ID', editable: false }, 
+        { key: 'LB_ID', label: 'LB ID', editable: true },
+        { key: 'Name', label: 'Name', editable: true },
+        { key: 'Date_of_Birth', label: 'Date of Birth', editable: true, type: 'date' },
+        { key: 'Father_Name', label: "Father's Name", editable: true },
+        { key: 'Mother_Name', label: "Mother's Name", editable: true },
+        { key: 'Husband_Name', label: "Husband's Name", editable: true },
+        { key: 'Aadhaar_Number', label: 'Aadhaar Number', editable: true, maxLength: 12 },
+        { key: 'Voter_Number', label: 'Voter Number', editable: true },
+        { key: 'Caste_Number', label: 'Caste Certificate Number', editable: true },
+        { key: 'Swasthasathi_Number', label: 'Swasthasathi Card Number', editable: true },
+        { key: 'Address', label: 'Address', editable: true, type: 'textarea' },
+        { key: 'Mobile_Number', label: 'Mobile Number', editable: true, type: 'tel', maxLength: 10 },
+        
+        // Bank Details
+        { key: 'Bank_Name', label: 'Bank Name', editable: true, type: 'select', 
+          options: ['Axis Bank', 'Bangiya Gramin Vikash Bank', 'Bank of Baroda', 'Bank of India', 'Bank of Maharashtra', 'Canara Bank', 'Central Bank of India', 'HDFC Bank', 'ICICI Bank', 'IDBI Bank', 'Indian Bank', 'Indian Overseas Bank', 'Indian Post Payment Bank', 'IndusInd Bank', 'Kotak Mahindra Bank', 'Punjab National Bank', 'State Bank of India', 'UCO Bank', 'Union Bank of India', 'Yes Bank'] },
+        { key: 'IFSC', label: 'IFSC', editable: true, maxLength: 11 },
+        { key: 'Account_Number', label: 'Account Number', editable: true },
+        
+        // Status Fields (Updated options to match index.html defaults)
+        { key: 'Case_Status', label: 'Case Status', editable: true, type: 'select', 
+          options: ['Wait for Entry', '1st Entry', '2nd submit', '3rd Block Verified', '4th District Verified'] },
+        { key: 'Bank_Validation', label: 'Bank Validation', editable: true, type: 'select', 
+          options: ['Waiting', 'Validation Success', 'Validation Error', 'A/c Blocked or Frozen', 'No Such Account', 'Reverted'] },
+        { key: 'Payment_Agreement', label: 'Payment Agreement', editable: true, type: 'select', 
+          options: ['0', '1500', '2000', '2500', '3000', '3500', '4000', '4500', '5000', '10000'] },
+        { key: 'Payment_Status', label: 'Payment Status', editable: true, type: 'select', 
+          options: ['No Payment', '1500', '2000', '2500', '3000', '3500', '4000', '4500', '5000', '10000', 'Payment Complete'] },
+        { key: 'Note', label: 'Note / Remarks', editable: true, type: 'textarea' },
+        
+        // Audit Fields
+        { key: 'Timestamp', label: 'Registration Time', editable: false },
+        { key: 'Last_Updated', label: 'Last Updated Time', editable: false }
+    ];
+
+    // --- Modal Logic (View & Edit) ---
+
+    function openDataModal(docId) {
+        const applicant = sheetData.find(a => a.id === docId);
+        if (!applicant) return;
+
+        currentApplicantData = applicant; // Store applicant data globally
+        document.getElementById('editDocId').value = docId;
+        document.getElementById('applicantNameHeader').textContent = applicant.Name || 'N/A';
+        document.getElementById('editStatusMessage').textContent = '';
+        
+        renderDetails(applicant, false); // Render in view mode initially
+        
+        // Photo handling
+        const photoImg = document.getElementById('applicantPhoto');
+        const noPhotoMsg = document.getElementById('noPhotoMsg');
+        if (applicant.Photo_Upload && applicant.Photo_Upload.startsWith('data:image')) {
+            photoImg.src = applicant.Photo_Upload;
+            photoImg.style.display = 'block';
+            noPhotoMsg.style.display = 'none';
+        } else {
+            photoImg.style.display = 'none';
+            noPhotoMsg.style.display = 'block';
+        }
+
+        openModal('dataModal');
     }
+
+    function toggleEditMode(isEdit) {
+        const editBtn = document.getElementById('editButton');
+        const saveBtn = document.getElementById('saveButton');
+        
+        renderDetails(currentApplicantData, isEdit);
+        
+        if (isEdit) {
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline-block';
+        } else {
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+        }
+    }
+
+    function renderDetails(applicant, isEdit) {
+        const detailsDiv = document.getElementById('detailsSection');
+        detailsDiv.innerHTML = '';
+
+        detailFields.forEach(field => {
+            const key = field.key;
+            let value = applicant[key];
+            
+            // Format date and handle N/A
+            if (key === 'Timestamp' || key === 'Last_Updated') {
+                value = value && value.toDate ? value.toDate().toLocaleString() : (value || 'N/A');
+            } else if (value === undefined || value === null || value === '') {
+                 // Allow LB_ID and Note to be truly empty strings if editing
+                value = (key === 'LB_ID' || key === 'Note') ? '' : 'N/A'; 
+            }
+
+            if (isEdit && field.editable) {
+                // Render Editable Field
+                let inputElement;
+                const elementId = `edit_${key}`;
+                const currentValue = value === 'N/A' ? '' : value; // Use empty string for form values if N/A
+
+                if (field.type === 'textarea') {
+                    inputElement = `<textarea id="${elementId}" name="${key}" class="editable-input" rows="${key === 'Address' ? 2 : 1}">${currentValue}</textarea>`;
+                } else if (field.type === 'select') {
+                    let optionsHtml = '';
+                    field.options.forEach(opt => {
+                        // Check for both equality and loose equality (in case of '0' vs 0)
+                        const selected = opt == currentValue ? 'selected' : '';
+                        optionsHtml += `<option value="${opt}" ${selected}>${opt}</option>`;
+                    });
+
+                    // Ensure the current value is an option if it doesn't match a standard one (e.g. legacy data)
+                    if (!field.options.includes(currentValue) && currentValue !== '') {
+                        optionsHtml = `<option value="${currentValue}" selected>Current: ${currentValue}</option>` + optionsHtml;
+                    }
+                    inputElement = `<select id="${elementId}" name="${key}" class="editable-input">${optionsHtml}</select>`;
+                } else {
+                    // Default to text or specified type (date, tel, etc.)
+                    const maxLengthAttr = field.maxLength ? `maxlength="${field.maxLength}"` : '';
+                    inputElement = `<input type="${field.type || 'text'}" id="${elementId}" name="${key}" class="editable-input" value="${currentValue}" ${maxLengthAttr}>`;
+                }
+
+                detailsDiv.innerHTML += `
+                    <label><strong>${field.label}:</strong></label>
+                    ${inputElement}
+                `;
+            } else {
+                // Render Read-only View
+                detailsDiv.innerHTML += `<p><strong>${field.label}:</strong> ${value || 'N/A'}</p>`;
+            }
+        });
+    }
+
+
+    // Submission handler for the full edit form
+    document.getElementById('fullEditForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const docId = document.getElementById('editDocId').value;
+        const statusMsg = document.getElementById('editStatusMessage');
+        statusMsg.textContent = 'Saving changes...';
+        
+        const updates = {};
+        // Get all form fields dynamically
+        const formData = new FormData(form);
+
+        // Filter and collect only the editable fields
+        detailFields.filter(f => f.editable).forEach(field => {
+            const key = field.key;
+            if (formData.has(key)) {
+                let value = formData.get(key).trim();
+                updates[key] = value;
+            }
+        });
+        
+        updates.Last_Updated = firebase.firestore.FieldValue.serverTimestamp(); // Update timestamp
+
+        try {
+            // Update Firestore document
+            await db.collection(COLLECTION_NAME).doc(docId).update(updates);
+            statusMsg.textContent = '✅ Details updated successfully! Reloading data...';
+
+            // Update the local sheetData array
+            const applicant = sheetData.find(a => a.id === docId);
+            if (applicant) {
+                // Merge old data with new updates
+                Object.assign(applicant, updates);
+                // Also update the Last_Updated field with the local time until the next refresh
+                applicant.Last_Updated = new Date(); 
+            }
+            
+            // Re-render in view mode
+            currentApplicantData = applicant; // Update global data reference
+            toggleEditMode(false);
+            
+            // Reload main table to reflect changes (especially Case_Status, etc.)
+            loadData(); 
+            
+        } catch (error) {
+            statusMsg.textContent = '❌ Failed to save changes.';
+            console.error('Firestore Update Error:', error);
+        }
+    });
 </script>
 
 </body>

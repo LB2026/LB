@@ -12,17 +12,16 @@
 /* Body - Vibrant Gradient Background */
 body {
   min-height: 100vh;
-  /* Brighter, more energetic gradient */
   background: linear-gradient(135deg,  #4ceaff , #f3ff4b , #37fa72 );
   color: #fff;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  overflow-y: auto; /* Allow scrolling for small screens */
+  overflow-y: auto;
   padding: 20px 0;
 }
 
 /* Glassmorphism Effect Base */
 .glass {
-  background: rgba(255, 255, 255, 0.15); /* Light, transparent white */
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
@@ -45,13 +44,13 @@ header h1 {
      -2px -2px 0 #fff,
    2px -2px 0 #fff,
   -2px  2px 0 #fff,
-   2px  2px 0 #fff; /* Creates white stroke effect */
+   2px  2px 0 #fff;
 }
 header h2 {
   font-size: 20px;
-  color: #ffffff; /* Darker secondary color for contrast */
+  color: #ffffff;
   margin-top: 5px;
-  background: #f100cd; /* Bright highlight */
+  background: #f100cd;
   padding: 5px 15px;
   border-radius: 10px;
   display: inline-block;
@@ -63,7 +62,6 @@ nav {
   padding: 8px 15px;
   border-radius: 50px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-  /* Use glassmorphism mixin */
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -73,7 +71,6 @@ nav button {
   padding: 10px 20px; border-radius: 30px; cursor: pointer; transition: 0.3s;
   font-size: 15px;
 }
-/* Active/Hover State - Vibrant Contrast */
 nav button:hover, nav button.active {
   background: #1eb100;
   color: #ffffff;
@@ -86,14 +83,12 @@ nav button:hover, nav button.active {
   display: none;
   width: 90%; max-width: 900px;
   text-align: center;
-  color: #000; /* Dark text for readability on light glass background */
-  /* Use glassmorphism mixin */
+  color: #000;
   background: linear-gradient(90deg, #ffc5dd, #ffffff, #ffffff, #c8f7ff);
   backdrop-filter: blur(10px);
   padding: 30px;
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  
 }
 .content.active {display: block; animation: fadeIn 0.5s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
@@ -102,7 +97,7 @@ nav button:hover, nav button.active {
 .content p {color: #3600f8; line-height: 1.8;}
 .content a {color: #ff1dbb; font-weight: 600; text-decoration: none;}
 
-/* Modal - Full screen overlay */
+/* Modal */
 .modal {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0, 0, 0, 0.7); display: none;
@@ -110,7 +105,6 @@ nav button:hover, nav button.active {
 }
 .modal.active {display: flex;}
 .modal-content {
-  /* Use glassmorphism mixin for the modal */
   background: rgba(255, 255, 255, 0.95);
   border-radius: 25px;
   padding: 30px;
@@ -118,7 +112,7 @@ nav button:hover, nav button.active {
   max-height: 90vh; overflow-y: auto;
   color: #333;
   animation: pop 0.4s ease;
-  position: relative; /* Needed for close button positioning */
+  position: relative;
 }
 @keyframes pop{from{transform:scale(0.9);opacity:0;}to{transform:scale(1);opacity:1;}}
 .close {
@@ -132,7 +126,6 @@ nav button:hover, nav button.active {
 .rg {
   padding: 15px 20px;
   text-align: center;
-  /* Multi-color header for impact */
   background: linear-gradient(90deg, #ff003c, #ffea00, #40e100);
   border-radius: 15px;
   color: #000;
@@ -157,11 +150,9 @@ form input:focus, form select:focus, form textarea:focus {
 }
 
 .two {display: grid; grid-template-columns: 1fr 1fr; gap: 20px;}
-@media (max-width: 600px) {
-  .two {grid-template-columns: 1fr;} /* Stack columns on small screens */
-}
+@media (max-width: 600px) {.two {grid-template-columns: 1fr;}}
 
-/* Submit Button - Bold and modern */
+/* Submit Button */
 button.submit {
   margin-top: 30px; width: 100%; padding: 16px; border: none;
   background: linear-gradient(90deg, #FF6F91, #00C9A7);
@@ -184,7 +175,70 @@ button.submit:hover {
 .modal-content::-webkit-scrollbar-track {background: #f1f1f1; border-radius: 10px;}
 .modal-content::-webkit-scrollbar-thumb {background: #FF6F91; border-radius: 10px;}
 
+/* ---------- MOBILE-FRIENDLY IMPROVEMENTS ---------- */
+@media (max-width: 768px) {
+  body {padding: 10px;}
+  header h1 {font-size: 26px; text-shadow: none;}
+  header h2 {font-size: 14px; padding: 6px 10px; display: block; margin-top: 8px;}
+
+  nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 15px;
+  }
+  nav button {
+    flex: 0 0 auto;
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  .content {
+    width: 100%;
+    padding: 20px 15px;
+    font-size: 15px;
+  }
+  .content h2 {font-size: 20px;}
+
+  .modal-content {
+    width: 95%;
+    max-width: 100%;
+    padding: 20px;
+    border-radius: 15px;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  form input, form select, form textarea {
+    font-size: 16px;
+    padding: 14px;
+  }
+  .two {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  button.submit {
+    font-size: 17px;
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  #status {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  header h1 { font-size: 22px; }
+  nav button { font-size: 12px; padding: 6px 10px; }
+  form label { font-size: 14px; }
+}
 </style>
+
 </head>
 <body>
 
@@ -233,7 +287,7 @@ button.submit:hover {
 
 <div id="registerModal" class="modal">
   <div class="modal-content">
-    <span class="close" onclick="closeModal('registerModal')">&times;</span>
+    <span class="close" onclick="closeModal('registerModal')">×</span>
     <header class="rg">
       <h1>Lakshmir Bhandar Data 2026</h1>
       <h2>Registration Form</h2>
@@ -263,8 +317,12 @@ button.submit:hover {
           <label>Bank Name</label>
           <select id="bank" name="Bank_Name" required>
             <option value="">-- Select Bank --</option>
-            <option>State Bank of India</option><option>Punjab National Bank</option>
-            <option>Bank of Baroda</option><option>UCO Bank</option><option>Union Bank of India</option>
+            <option>Axis Bank</option><option>Bangiya Gramin Vikash Bank</option><option>Bank of Baroda</option><option>Bank of India</option>
+            <option>Bank of Maharashtra</option><option>Canara Bank</option><option>Central Bank of India</option>
+            <option>HDFC Bank</option><option>ICICI Bank</option><option>IDBI Bank</option>
+            <option>Indian Bank</option><option>Indian Overseas Bank</option><option>Indian Post Payment Bank</option><option>IndusInd Bank</option>
+            <option>Kotak Mahindra Bank</option><option>Punjab National Bank</option><option>State Bank of India</option>
+            <option>UCO Bank</option><option>Union Bank of India</option><option>Yes Bank</option>
           </select>
         </div>
         <div><label>IFSC</label><input id="ifsc" name="IFSC" type="text" maxlength="11" required /></div>
@@ -281,7 +339,25 @@ button.submit:hover {
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
 <script>
+    // 2. Your Firebase Project Configuration (REPLACE WITH YOUR ACTUAL CONFIG)
+     const firebaseConfig = {
+  apiKey: "AIzaSyBl45xlrEjrZrDp-96PhVkhKaqcp0OEzLs",
+  authDomain: "lb26-6e70d.firebaseapp.com",
+  projectId: "lb26-6e70d",
+  storageBucket: "lb26-6e70d.firebasestorage.app",
+  messagingSenderId: "206802262023",
+  appId: "1:206802262023:web:336d2466948bccc4f672a2",
+  measurementId: "G-CYVV64P9VP"
+};
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
 // --- UI Functions ---
 function showContent(id, button) {
   document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
@@ -320,99 +396,91 @@ function fileToBase64(file) {
   });
 }
 
-// --- Form Submission & Google Sheet Integration ---
-
-// ** IMPORTANT: Replace this URL with your published Google Apps Script Web App URL **
-// I've kept the example URL but you must use your own live deployment URL.
-const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCjVYz3e3ptofhVHj03kHoyMl4nKOmhO_gJmabtLC-HRuch-S9rL-8a_bMK2M3m_UC/exec';
+// --- Form Submission & Firestore Integration (UPDATED) ---
 
 document.getElementById("regForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  const s = document.getElementById("status");
-  const photoInput = document.getElementById("photo");
-  
-  // Client-side Validation (Aadhaar, Mobile, IFSC)
-  const a = document.getElementById("aadhaar").value.trim();
-  const m = document.getElementById("mobile").value.trim();
-  const i = document.getElementById("ifsc").value.trim();
+    e.preventDefault();
+    const form = e.target;
+    const s = document.getElementById("status");
+    const photoInput = document.getElementById("photo");
+    
+    // Client-side Validation (Aadhaar, Mobile, IFSC)
+    const a = document.getElementById("aadhaar").value.trim();
+    const m = document.getElementById("mobile").value.trim();
+    const i = document.getElementById("ifsc").value.trim();
 
-  if (!/^\d{12}$/.test(a)) { s.textContent = "❌ Aadhaar must be exactly 12 digits."; return; }
-  if (!/^\d{10}$/.test(m)) { s.textContent = "❌ Mobile must be exactly 10 digits."; return; }
-  if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(i)) { s.textContent = "❌ IFSC format invalid (e.g., ABCD0123456)."; return; }
-  
-  if (!photoInput.files || photoInput.files.length === 0) {
-    s.textContent = "❌ Please upload a Photo.";
-    return;
-  }
+    if (!/^\d{12}$/.test(a)) { s.textContent = "❌ Aadhaar must be exactly 12 digits."; return; }
+    if (!/^\d{10}$/.test(m)) { s.textContent = "❌ Mobile must be exactly 10 digits."; return; }
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(i)) { s.textContent = "❌ IFSC format invalid (e.g., ABCD0123456)."; return; }
+    
+    if (!photoInput.files || photoInput.files.length === 0) {
+        s.textContent = "❌ Please upload a Photo.";
+        return;
+    }
 
-  s.innerHTML = "<span style='font-size:22px;'>⏳</span> Uploading...<br><small>Please wait a few seconds.</small>";
-  
-  try {
-    // 1. Convert the file to a Base64 Data URL
-    const photoBase64Url = await fileToBase64(photoInput.files[0]);
-    
-    // 2. Collect other form data
-    const formData = new FormData(form);
-    const data = {};
+    s.innerHTML = "<span style='font-size:22px;'>⏳</span> Registering...<br><small>Please wait a few seconds.</small>";
+    
+    try {
+        // 1. Convert the file to a Base64 Data URL
+        const photoBase64Url = await fileToBase64(photoInput.files[0]);
+        
+        // 2. Collect other form data
+        const formData = new FormData(form);
+        const data = {};
 
-    for (let [key, value] of formData.entries()) {
-      // Use the name attribute as the key, e.g., 'Name', 'Date_of_Birth', etc.
-      data[key] = value;
-    }
-    
-    // Remove the File object, replace it with the Base64 URL string
-    // NOTE: The 'name' attribute for the input is 'Photo'
-    delete data.Photo; 
-    
-    // CRITICAL CHANGE: Map the Base64 data to the key that matches your sheet header.
-    // If your sheet uses "Photo Upload" as the header, you must ensure the Apps Script knows to map
-    // the incoming JavaScript key (e.g., 'Photo_Upload') to that header.
-    // For simplicity, we use the underscore version here, assuming the Apps Script
-    // will replace underscores with spaces to match your header "Photo Upload".
-    data.Photo_Upload = photoBase64Url;
-    
-    // Add timestamp for submission tracking
-    data.Timestamp = new Date().toLocaleString(); 
-    
-    // 3. Submit the data
-    await submitToSheet(data, s, form);
-    
-  } catch (error) {
-    s.style.color = 'red';
-    s.textContent = `❌ Submission Error: Failed to process photo or submit. Check console for details.`;
-    console.error('Submission Error:', error);
-  }
+        for (let [key, value] of formData.entries()) {
+            // Firestore keys will use the name attribute, e.g., 'Name', 'Date_of_Birth', etc.
+            data[key] = value;
+        }
+        
+        // Remove the File object, replace it with the Base64 URL string
+        delete data.Photo; 
+        
+        // Use a key that matches your desired Firestore field name
+        data.Photo_Upload = photoBase64Url;
+        
+        // --- START: AUTO-INJECT SILENT FIELDS (MATCHING ADMIN.HTML) ---
+        data.LB_ID = '';
+        data.Case_Status = 'Wait for Entry'; // Matches default in admin modal
+        data.Bank_Validation = 'Waiting'; // Matches option in admin modal
+        data.Payment_Agreement = '0'; // Matches option in admin modal
+        data.Payment_Status = 'No Payment'; // Matches option in admin modal
+        data.Note = '';
+        // --- END: AUTO-INJECT SILENT FIELDS ---
+        
+        // 3. Submit the data to Firestore
+        await submitToFirestore(data, s, form);
+        
+    } catch (error) {
+        s.style.color = 'red';
+        s.textContent = `❌ Submission Error: Failed to process photo or submit. Check console for details.`;
+        console.error('Submission Error:', error);
+    }
 });
 
-async function submitToSheet(data, statusElement, form) {
-  
-  // Prepare data for the script (send as JSON)
-  const payload = JSON.stringify(data);
+/**
+ * Submits the form data to the Firestore database.
+ * @param {Object} data The data object to save.
+ * @param {HTMLElement} statusElement The element to display status messages.
+ * @param {HTMLFormElement} form The registration form element.
+ */
+async function submitToFirestore(data, statusElement, form) {
+    const COLLECTION_NAME = 'lakshmir_bhandar_registrations'; // IMPORTANT: Use your collection name
 
-  try {
-    const response = await fetch(SHEET_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: payload
-    });
+    try {
+        const docRef = await db.collection(COLLECTION_NAME).add(data);
 
-    if (response.ok) {
-      statusElement.style.color = 'green';
-      statusElement.textContent = "✅ Registered Successfully and Photo URL Saved!";
-      form.reset(); // Clear form on successful submission
-    } else {
-      statusElement.style.color = 'red';
-      statusElement.textContent = `❌ Submission Failed: Server error (${response.status} ${response.statusText}). Check Apps Script logs.`;
-    }
-  } catch (error) {
-    statusElement.style.color = 'red';
-    statusElement.textContent = `❌ Submission Failed: Network Error or Invalid Script URL.`;
-    console.error('Submission Error:', error);
-  }
+        statusElement.style.color = 'green';
+        statusElement.textContent = `✅ Registered Successfully! ID: ${docRef.id}`;
+        form.reset(); // Clear form on successful submission
+       setTimeout(() => {
+            closeModal('registerModal');
+        }, 1500);  
+    } catch (error) {
+        statusElement.style.color = 'red';
+        statusElement.textContent = `❌ Submission Failed: Firestore Write Error.`;
+        console.error('Firestore Submission Error:', error);
+    }
 }
 </script>
 </body>
